@@ -1,3 +1,8 @@
 key
 *_explore.r
-data/*
+/data/*
+.RData
+.Rhistory
+*.Rproj
+/archive/
+/.Rproj.user/
