@@ -3,16 +3,16 @@
 require(jsonlite)
 require("httr")
 #library(readr)
-source("key.r")
+source("key-func.r")
 
-load("data/account_id/active_account_id_1.rdata")
+load("data/account_id/active_account_id_2.rdata")
 
-for (a in 6:length(active.account.id)){
+for (a in 411:length(active.account.id)){
   this.account= active.account.id[[a]]
   
   # find whether there are the same account in the fold already. 
   if(file.exists(paste0("data/matchlist/",this.account))){
-    write(paste0("Ind: ",a,", UID: ",this.account),file="data/matchlist/000log",append=T)
+    write(paste0("Ind: ",a,", UID: ",this.account),file="data/matchlist/log/000log",append=T)
     next
   }
   
@@ -33,10 +33,11 @@ for (a in 6:length(active.account.id)){
         match.info = match.info[-nrow(match.info),]
       }
       match.info = rbind(match.info, this.match$matches)
-      Sys.sleep(120/101) # make sure we don't exceed the 100 per two minutes limit.
+      Sys.sleep(120/80) # make sure we don't exceed the 100 per two minutes limit.
     }
   }
   
   match.info$time = as.POSIXct(match.info$timestamp/1000, origin="1970-01-01") 
   write.csv(match.info, file =paste0("data/matchlist/",this.account))
 }
+

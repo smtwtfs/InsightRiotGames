@@ -6,3 +6,4 @@ key
 *.Rproj
 /archive/
 /.Rproj.user/
+/plot/
