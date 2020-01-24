@@ -29,7 +29,6 @@ for (f in files){
 save(index.account.hash, file = "data/matchlist_index-account-hash.rdata")
 save(interval, file = "data/matchlist_interval.rdata")
 
-
 source("color.r")
 require(jsonlite)
 require("httr")
@@ -38,7 +37,6 @@ key = scan("key", what = character()) # key is just a file with pure key informa
 
 load("data/matchlist_index-account-hash.rdata")
 load(file = "data/matchlist_interval.rdata")
-
 
 interval$win =0
 interval$ally1 =0
@@ -51,14 +49,20 @@ interval$enemy3 = 0
 interval$enemy4 = 0
 interval$enemy5 = 0
 
-for(i in 1:nrow(interval)){
+for(i in 1849:nrow(interval)){
   this.match.id = interval$gameid[i]
   accountid = index.account.hash[index.account.hash[,1] ==interval$index[i],2]
   
   this.match = fromJSON(content(GET(akey('https://na1.api.riotgames.com/lol/match/v4/matches/', this.match.id)), as = "text", encoding = "latin1"))
   
+  if(is.null(this.match$participants)){
+    next
+  }
+  if(nrow(this.match$participants) ==1){
+    next
+  }
   # gether some info
-  this.playerid= this.match$participantIdentities$participantId[this.match$participantIdentities$player$accountId == accountid]
+  this.playerid = this.match$participantIdentities$participantId[this.match$participantIdentities$player$accountId == accountid]
   
   this.playerinfo = this.match$participants[this.match$participants$participantId==this.playerid,]
   
@@ -75,11 +79,15 @@ for(i in 1:nrow(interval)){
   
   
   interval[i,]$win = win
-  for(j in 1:length(allies)){
-    interval[i,6+j] = allies[j]
+  if( (!is.null(allies)) & length(allies) !=0){
+    for(j in 1:length(allies)){
+      interval[i,6+j] = allies[j]
+    }
   }
-  for(j in 1:length(enemies)){
-    interval[i,10+j] = enemies[j]
+  if( (!is.null(enemies)) & length(enemies) !=0){
+    for(j in 1:length(enemies)){
+      interval[i,10+j] = enemies[j]
+    }
   }
   if( i %% 100 ==0 ){
     save(interval, file="data/intervaltemp.rdata")
