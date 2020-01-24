@@ -1,5 +1,3 @@
-# paste key info.
-key = scan("key", what = character())
 akey <- function(..., begin.index =NULL, end.index =NULL, ke = NULL){
   if(is.null(ke)){ke = key}
   out = paste0(...)
