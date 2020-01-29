@@ -59,7 +59,7 @@ load("data/matchlist_index-account-hash.rdata")
 
 load("data/intervaltemp.rdata")
 
-for(i in 15001:nrow(interval)){
+for(i in 15065:nrow(interval)){
   this.match.id = interval$gameid[i]
   accountid = index.account.hash[index.account.hash[,1] ==interval$index[i],2]
   
@@ -72,7 +72,7 @@ for(i in 15001:nrow(interval)){
     next
   }
   # gether some info
-  this.playerid = this.match$participantIdentities$participantId[this.match$participantIdentities$player$accountId == accountid]
+  this.playerid = this.match$participantIdentities$participantId[this.match$participantIdentities$player$currentAccountId == accountid]
   
   this.playerinfo = this.match$participants[this.match$participants$participantId==this.playerid,]
   
