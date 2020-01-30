@@ -56,15 +56,16 @@ key = scan("key", what = character()) # key is just a file with pure key informa
 load("data/matchlist_index-account-hash.rdata")
 #load(file = "data/matchlist_interval.rdata")
 
-
 load("data/intervaltemp.rdata")
 
 for(i in 15065:nrow(interval)){
+#for(i in needhelp[80:1500]){
   this.match.id = interval$gameid[i]
   accountid = index.account.hash[index.account.hash[,1] ==interval$index[i],2]
   
   this.match = fromJSON(content(GET(akey('https://na1.api.riotgames.com/lol/match/v4/matches/', this.match.id)), as = "text", encoding = "latin1"))
   
+  cat("i=",i, ", message:", this.match$status$message, sep = "")
   if(is.null(this.match$participants)){
     next
   }
@@ -108,3 +109,10 @@ for(i in 15065:nrow(interval)){
   Sys.sleep(120/100)
 }
 
+DEBUG=F
+if(DEBUG){
+  sort(which(interval[,7] == 0 ))[1:1600]
+  needhelp = sort(which(interval[,7] == 0 ))[1:1600]
+  # before 80 checked
+}
+  

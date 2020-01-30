@@ -13,3 +13,5 @@ col.r <- function(numbers){
 col.p <- function(numbers){
   color.gradient(1:numbers, c("#FFECB3","#E85285","#6A1B85"), colsteps = 100)
 }
+
+col.wl <- c(win = "#087CCD", lose = "#ed3232")
