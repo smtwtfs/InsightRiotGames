@@ -10,4 +10,8 @@ champion.info = fromJSON(content(GET("http://ddragon.leagueoflegends.com/cdn/10.
 champion.info = t(sapply(champion.info$data, function(X){list(id=X$id, key=X$key, name=X$name)}))
 
 
+champions = cbind(unlist(champion.info[,2]), unlist(champion.info[,1]))
+champions = champions[order(champions[,2]),]
+
 save(champion.info, file = "data/champion-info.rdata")
+save(champions, file = "data/champions.rdata")

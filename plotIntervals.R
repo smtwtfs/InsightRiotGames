@@ -53,6 +53,19 @@ axis(1, 24*(0:22), labels = 0:22)
 axis(2, log(c(1,10,100,1000,10000)), labels = c(1,10,100,1000,10000))
 dev.off()
 
+##
+load("data/interval_180000.rdata")
+ItNs = interval$ItN[interval$win !=0]
+ItNs = ItNs[ItNs<1000]
+
+hh = hist(ItNs, breaks = 200, plot = T)
+#hh$counts = log(hh$counts); hh$counts[hh$counts==-Inf] = 0
+
+cols = rev(col.r(8))[findInterval(hh$mids, vec = 2*c(0,1,2,3,4,5,6,7))]
+png("plot/HistItN.png", 9,5, units = "in", res = 300)
+plot(hh, col = cols, main = "Histogram of Pause Interval", xlab = "Hours", ylab = "count")
+dev.off()
+
 rm(itn)
 
 # average pause duration (later on: vs. number of games per session)
