@@ -1,0 +1,10 @@
+name: webapp_deploy
+title:
+username:
+account: merc-guild-war
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 1769490
+bundleId: 2778854
+url: https://merc-guild-war.shinyapps.io/webapp_deploy/
+when: 1580977424.84685

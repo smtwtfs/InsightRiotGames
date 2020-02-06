@@ -9,3 +9,6 @@ key2
 /.Rproj.user/
 /plot/
 /extra/
+**/.Rproj.user/
+**/rsconnect/
+

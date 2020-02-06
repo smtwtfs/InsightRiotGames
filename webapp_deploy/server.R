@@ -1,15 +1,15 @@
 library(shiny)
-#source("color.r")
 require(jsonlite)
-require("httr")
-source("../key-func.r")
-key = scan("../key", what = character()) # 
-load("../data/champion-info.rdata")
+require(xgboost)
 
-data.path = ""
-if( Sys.info()["sysname"] == "Linux"){
-  data.path = ""
-}
+require("httr")
+source("key-func.r")
+source("color.r")
+
+key = scan("key", what = character()) # 
+load("data/champion-info.rdata")
+load("data/champions.rdata")
+load("data/xgb_mod.rdata")
 
 function(input, output, session) {
   query<-reactiveValues(a='')
@@ -26,10 +26,10 @@ function(input, output, session) {
   ###=======================================================###
   ana.player <- eventReactive(input$player.ana, {
     player.info$a = T
-    accountid = fromJSON(content(GET(akey('https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-name/',input$sn)), as = "text", encoding = "latin1"))$accountId
+    accountid = fromJSON(content(GET(akey('https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-name/',input$sn, ke = input$key)), as = "text", encoding = "latin1"))$accountId
     
     # infor include start and end
-    this.match = fromJSON(content(GET(akey('https://na1.api.riotgames.com/lol/match/v4/matchlists/by-account/', accountid)), as = "text", encoding = "latin1"))
+    this.match = fromJSON(content(GET(akey('https://na1.api.riotgames.com/lol/match/v4/matchlists/by-account/', accountid, ke = input$key)), as = "text", encoding = "latin1"))
     
     # pure info
     match.info = this.match$matches 
@@ -37,10 +37,10 @@ function(input, output, session) {
     
     if(total.game > 100) {
       begin.index = 99;end.index= 199
-      while(begin.index < min(total.game, 100)){
-        this.match = fromJSON(content(GET(akey('https://na1.api.riotgames.com/lol/match/v4/matchlists/by-account/', begin.index = begin.index , end.index = end.index, accountid)), as = "text", encoding = "latin1"))
+      while(begin.index < min(total.game, 600)){
+        this.match = fromJSON(content(GET(akey('https://na1.api.riotgames.com/lol/match/v4/matchlists/by-account/', begin.index = begin.index , end.index = end.index, accountid, ke = input$key)), as = "text", encoding = "latin1"))
         
-        query$a = paste0(query$a,diskey('https://na1.api.riotgames.com/lol/match/v4/matchlists/by-account/', begin.index = begin.index , end.index = end.index, accountid), sep = "\n")
+        query$a = paste0(query$a,diskey('https://na1.api.riotgames.com/lol/match/v4/matchlists/by-account/', begin.index = begin.index , end.index = end.index, accountid, ke = input$key), sep = "\n")
         
         begin.index = begin.index + 99; end.index = begin.index + 100
         total.game = this.match$totalGames
@@ -124,13 +124,13 @@ function(input, output, session) {
   ###=======================================================###
   # Query this players match data and update it to selectize. #
   ###=======================================================###
-  observeEvent(input$player.match, {
+  observeEvent(input$player.ana, {
     # get account id from name.
-    id = fromJSON(content(GET(akey('https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-name/',input$sn)), as = "text", encoding = "latin1"))$accountId
-    query$a= paste0(query$a,diskey('https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-name/',input$sn), sep = '\n')
+    id = fromJSON(content(GET(akey('https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-name/',input$sn, ke = input$key)), as = "text", encoding = "latin1"))$accountId
+    query$a= paste0(query$a,diskey('https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-name/',input$sn, ke = input$key), sep = '\n')
     
-    match.info = fromJSON(content(GET(akey('https://na1.api.riotgames.com/lol/match/v4/matchlists/by-account/',id)), as = "text", encoding = "latin1"))$matches
-    query$a= paste0(query$a, diskey('https://na1.api.riotgames.com/lol/match/v4/matchlists/by-account/',id), sep = "\n")
+    match.info = fromJSON(content(GET(akey('https://na1.api.riotgames.com/lol/match/v4/matchlists/by-account/',id, ke = input$key)), as = "text", encoding = "latin1"))$matches
+    query$a= paste0(query$a, diskey('https://na1.api.riotgames.com/lol/match/v4/matchlists/by-account/',id, ke = input$key), sep = "\n")
     
     gameId = match.info$gameId
     
@@ -159,9 +159,9 @@ function(input, output, session) {
     
     this.match.id = input$mid
     
-    this.match = fromJSON(content(GET(akey('https://na1.api.riotgames.com/lol/match/v4/matches/', this.match.id)), as = "text", encoding = "latin1"))
+    this.match = fromJSON(content(GET(akey('https://na1.api.riotgames.com/lol/match/v4/matches/', this.match.id, ke = input$key)), as = "text", encoding = "latin1"))
     
-    query$a= paste0(query$a,diskey('https://na1.api.riotgames.com/lol/match/v4/matches/', this.match.id), seq = "\n")
+    query$a= paste0(query$a,diskey('https://na1.api.riotgames.com/lol/match/v4/matches/', this.match.id, ke = input$key), seq = "\n")
     # gether some info
     this.playerid = this.match$participantIdentities$participantId[this.match$participantIdentities$player$summonerName == input$sn]
     
