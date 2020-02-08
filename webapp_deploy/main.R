@@ -13,5 +13,6 @@ runApp()
 # for test
 if(F){
   accountId = "dA6gR7LsPXhfTi7dDmptWXjqVYQKYRaJDu8TwHwlnJ3SqCk"
+  accountid =  "dA6gR7LsPXhfTi7dDmptWXjqVYQKYRaJDu8TwHwlnJ3SqCk"
   this.match.id = "3257517038"
 }

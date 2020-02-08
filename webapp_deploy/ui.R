@@ -1,8 +1,10 @@
 library(shiny)
+require(shinyWidgets)
 
 fluidPage(
+
   titlePanel("Infinity Loop"),
-  
+
   sidebarPanel(
     textInput("sn", "Summoner ID", value = "mumuyyy"),
     actionButton("player.ana", "Player Analytics & Show Matches", style="color: #fff; background-color: #337ab7; border-color: #2e6da4"),
@@ -14,20 +16,20 @@ fluidPage(
     selectInput(inputId = "mid", "Match ID", choices= ""),
     actionButton("run", "Match Analytics", style="color: #fff; background-color: #337ab7; border-color: #2e6da4"),
     hr(),
-    passwordInput("key", "API Key", value = "RGAPI-d402326b-fe47-4fac-b9fb-12bda90c47db", width = NULL, placeholder = "RGAPI-652fd4a4-XXXX-XXXX-XXXX-XXXXXXXXXXXXX"),
+    passwordInput("key", "API Key", value = "RGAPI-33ee945b-61d1-43fd-a2b5-fdb636f35575", width = NULL, placeholder = "RGAPI-652fd4a4-XXXX-XXXX-XXXX-XXXXXXXXXXXXX"),
     hr(),
     h5(shiny::HTML("<p>Example Summoner:</p><p>AnDa</p><p>unth3</p><p>REDMAN00687</p>"))
   ),
   
   mainPanel(
     fluidRow(
-      column(3,
-             wellPanel(style = "background-color: #fff; border-color: #2c3e50; height: 550px;",
-                       htmlOutput("playerBasic"))),
-      column(6,
+      #column(3,
+      #       wellPanel(style = "background-color: #fff; border-color: #2c3e50; height: 550px;",
+      #                 htmlOutput("playerBasic"))),
+      column(8,
              wellPanel(style = "background-color: #fff; border-color: #2c3e50; height: 550px;",
                        plotOutput("hist"))),
-      fluidRow(column(3,
+      fluidRow(column(4,
              
              wellPanel(style = "background-color: #fff; border-color: #2c3e50; height: 355px;",
                        htmlOutput("match.info"),

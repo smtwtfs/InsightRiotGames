@@ -5,7 +5,7 @@ source("color.r")
 # Output: 
 #-------------------------------------------------------------
 
-load("data/interval_170000.rdata")
+load("data/interval_71000.rdata")
 interval = interval[interval$win !="0",]
 
 # target variable
@@ -15,8 +15,16 @@ interval[is.na(interval)] = 0
 #time = format(interval$time, tz="America/Los_Angeles", usetz=TRUE)
 hour =as.numeric(strftime(interval$time, format="%H"))
 min = round(as.numeric(strftime(interval$time, format="%M"))/60, digits = 1)
-hour = hour +min
+hour = hour + min
 interval$hour = hour
+
+#tiredness ( how many games has player continously)
+
+b.pos = c(0,which(interval['breaks'] == 1))
+ses = rep(0,length(b.pos))
+for(i in 1:length(ses)){
+  ses[i] = i - max(b.pos[b.pos<i])
+}
 
 
 xx= subset(interval, select = -c(index, gameid, ItN, time, breaks))
